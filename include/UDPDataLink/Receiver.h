@@ -64,6 +64,7 @@ public:
         catch (const boost::archive::archive_exception& ex) 
         {
             std::cout << "Caught archive_exception: deserializeObject failed " << ex.what() << std::endl;
+            std::cout << "Serialized Data are : " << serializedData_ << std::endl;
             return 1;
             // Handle the exception (e.g., log the error or perform recovery)
         }
@@ -93,7 +94,7 @@ private:
         }
         return 1;
     }
-    void dummy();
+
     int receiveSerializedObject()
     {
  
@@ -110,8 +111,6 @@ private:
 
         // std::cout << "recvStatus : " << recvStatus << " dataSize : " << dataSize << std::endl;
 
-        if(dataSize > 1e8){return 3;}
-
         if (recvStatus <= 0) {
             // std::cout << "No new data available at the moment." << std::endl;
             // Return an empty object to indicate no new data.
@@ -126,6 +125,8 @@ private:
             // For this example, we'll return an empty object.
             return 1;
         } 
+
+        if(dataSize > 1e8){return 3;}
 
         char buffer[dataSize + 1];
         recvfrom(socket_, buffer, dataSize, 0,

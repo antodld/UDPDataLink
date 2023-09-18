@@ -23,9 +23,8 @@ template <typename T>
 struct Publisher
 {
 public:
-    Publisher()
-    {
-    }
+
+
     void create(const char* ip, const int port)
     {
         // Create a UDP socket
@@ -57,16 +56,11 @@ public:
     }
     void update_data(const T & data)
     {
-        data_ = data;
-        update();
+        update(data);
     }
     bool connected()
     {
         return connected_;
-    }
-    T get()
-    {
-        return data_;
     }
     ~Publisher()
     {
@@ -75,11 +69,11 @@ public:
     }
 
 private:
-    void update()
+    void update(const T & data)
     {
         if(connected_)
         {
-            SerializableClass<T> objToSend(data_, "Hello, Server!");
+            SerializableClass<T> objToSend(data, "Hello, Server!");
             sendSerializedObject(objToSend);
         }
     }
@@ -97,7 +91,6 @@ private:
 
     }
 
-    T data_;
     int server_port_ = 12345;
     int socket_;
     bool connected_ = false;

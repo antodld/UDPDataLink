@@ -13,12 +13,6 @@ project(${PROJECT_NAME} LANGUAGES CXX VERSION ${PROJECT_VERSION})
 
 find_package(Boost REQUIRED COMPONENTS serialization)
 
-set(HDR
-  include/UDPDataLink/Publisher.h
-  include/UDPDataLink/Receiver.h
-  include/UDPDataLink/Serialize.h
-)
-
 set(HDR_DIR
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/UDPDataLink>$<INSTALL_INTERFACE:include/UDPDataLink>)
 
