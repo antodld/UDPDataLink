@@ -38,7 +38,7 @@ struct Receiver : public UDPClient {
 
     int get(T & data)
     {
-        if(serializedData_.size()) return;
+        if(serializedData_.size()) return 0;
 
         try
         {

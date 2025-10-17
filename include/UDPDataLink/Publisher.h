@@ -38,7 +38,8 @@ public:
 
     void update_data(const T & data)
     {
-        publish(serializeObject(data));
+        SerializableClass<T> objToSend(data, "Hello, Server!");
+        publish(serializeObject(objToSend));
     }
 };
 
