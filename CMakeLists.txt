@@ -13,6 +13,10 @@ project(${PROJECT_NAME} LANGUAGES CXX VERSION ${PROJECT_VERSION})
 
 find_package(Boost REQUIRED COMPONENTS serialization)
 
+set(SRCS
+  src/udp_server.cpp
+  src/udp_client.cpp
+) 
 set(HDR_DIR
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/UDPDataLink>$<INSTALL_INTERFACE:include/UDPDataLink>)
 
@@ -22,14 +26,11 @@ set(HDR
   ${HDR_DIR}/Serialize.h
 )
 
-# header-only
-add_library(${PROJECT_NAME} INTERFACE)
-if(COMMAND target_sources)
-  target_sources(${PROJECT_NAME} INTERFACE ${HDR})
-endif()
-# target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/UDPDataLink)
+add_library(${PROJECT_NAME} SHARED ${SRCS} ${HDR})
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/UDPDataLink>$<INSTALL_INTERFACE:include/UDPDataLink>)
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Boost::serialization)
 
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Config")
 
