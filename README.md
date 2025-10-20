@@ -7,7 +7,7 @@ UDPDataLink is a repository that enables communication of generic class objects 
 
 This repository relies on the Boost library.
 
-# Installation 
+# Installation
 
 1. Create a 'build' directory at the root of the repository.
 
@@ -23,7 +23,7 @@ The object class supposed to be sent should be serializable by boost
 
 ## Publisher
 
-A data publisher (UDP server)of an object of class T can be initialized and used as such : 
+A data publisher (UDP server)of an object of class T can be initialized and used as such :
 ```cpp
 const int port = 1234
 publisher = UDPDataLink::Publisher<T>(port);
@@ -35,7 +35,7 @@ publihser.update_data(data); // send data to last client
 
 ## Receiver
 
-A data receiver of an object of class T can be initialized and used as such : 
+A data receiver of an object of class T can be initialized and used as such :
 ```cpp
 const std::string server_ip = "192.168.1.15"; // ip of the publisher server
 const std::string server_port = 1234; // same as the publisher above
@@ -55,4 +55,3 @@ receiver.get(data);
 ```cmake
 target_link_libraries(PROJECT PRIVATE UDPDataLink)
 ```
-
