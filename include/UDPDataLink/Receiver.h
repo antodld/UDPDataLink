@@ -28,7 +28,6 @@ struct Receiver : public UDPClient {
 
     void reception_callback(const uint8_t* buffer, size_t size) override {
         serializedData_ = std::string(reinterpret_cast<const char*>(buffer), size);
-        std::cout << "Received from server: " << serializedData_ << std::endl;
     }
 
     void send_data(const uint8_t* buffer, size_t size) {
