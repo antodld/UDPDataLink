@@ -4,11 +4,6 @@
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/vector.hpp>
-#include <iostream>
-#include <netinet/in.h>
-#include <sstream>
-#include <sys/socket.h>
-#include <unistd.h>
 
 namespace UDPDataLink
 {

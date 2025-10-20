@@ -1,23 +1,9 @@
 #pragma once
-#ifndef RECEIVER_H
-#  define RECEIVER_H
-#  include <boost/archive/text_iarchive.hpp>
-#  include <boost/archive/text_oarchive.hpp>
-#  include <boost/serialization/string.hpp>
-#  include <boost/serialization/vector.hpp>
-#  include "Serialize.h"
-#  include <arpa/inet.h>
-#  include <csignal>
-#  include <errno.h>
-#  include <fcntl.h>
-#  include <iostream>
-#  include <netinet/in.h>
-#  include <sstream>
-#  include <string>
-#  include <sys/socket.h>
-#  include <thread>
-#  include <udp_client.h>
-#  include <unistd.h>
+
+#include "Serialize.h"
+#include <iostream>
+#include <string>
+#include <udp_client.h>
 
 namespace UDPDataLink
 {
@@ -60,4 +46,3 @@ protected:
 };
 
 } // namespace UDPDataLink
-#endif

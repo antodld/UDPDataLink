@@ -1,21 +1,7 @@
 #pragma once
-#ifndef SENDER_H
-#  define SENDER_H
-#  include <boost/archive/text_iarchive.hpp>
-#  include <boost/archive/text_oarchive.hpp>
-#  include <boost/serialization/map.hpp>
-#  include <boost/serialization/string.hpp>
-#  include <boost/serialization/vector.hpp>
-#  include "Serialize.h"
-#  include <arpa/inet.h>
-#  include <fcntl.h>
-#  include <iostream>
-#  include <netinet/in.h>
-#  include <sstream>
-#  include <string>
-#  include <sys/socket.h>
-#  include <udp_server.h>
-#  include <unistd.h>
+#include "Serialize.h"
+#include <iostream>
+#include <udp_server.h>
 
 namespace UDPDataLink
 {
@@ -46,4 +32,3 @@ public:
 };
 
 } // namespace UDPDataLink
-#endif
