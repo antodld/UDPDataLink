@@ -9,8 +9,7 @@ namespace UDPDataLink
 template<typename T>
 struct Publisher : public UDPServer
 {
-public:
-  Publisher(uint16_t port) : UDPServer(port) {}
+  using UDPServer::UDPServer;
 
   // Optionally handle incoming messages
   void reception_callback(const uint8_t * buffer, size_t size) override
