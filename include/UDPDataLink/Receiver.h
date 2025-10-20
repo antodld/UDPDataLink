@@ -24,9 +24,9 @@ struct Receiver : public UDPClient
     UDPClient::send_data(reinterpret_cast<const uint8_t *>(msg.data()), msg.size());
   }
 
-  int get(T & data)
+  bool get(T & data)
   {
-    if(serializedData_.size()) return 0;
+    if(serializedData_.empty()) return false;
 
     try
     {
@@ -36,9 +36,9 @@ struct Receiver : public UDPClient
     {
       std::cout << "Caught archive_exception: deserializeObject failed " << ex.what() << std::endl;
       std::cout << "Serialized Data are : " << serializedData_ << std::endl;
-      return 1;
+      return false;
     }
-    return 0;
+    return true;
   }
 
 protected:
