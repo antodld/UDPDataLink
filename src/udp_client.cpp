@@ -57,9 +57,6 @@ void UDPClient::connect(const std::string& server_ip, uint16_t server_port,
     server_endpoint_ = *resolver.resolve(query);
 }
 
-void UDPClient::set_Verbose(bool state) {
-    set_verbose(state);
-}
 void UDPClient::set_verbose(bool state) {
     verbose_ = state;
 }
@@ -68,19 +65,10 @@ void UDPClient::receive() {
     start_receive();
     io_service_.run();
 }
-void UDPClient::start_Client() {
-    receive();
-}
 void UDPClient::start_reception() {
     io_service_.reset();
     start_receive();
     run_thread_ = std::thread([this] { io_service_.run(); });
-}
-void UDPClient::start_Client_Thread() {
-    start_reception();
-}
-void UDPClient::stop_Client() {
-    stop_reception();
 }
 void UDPClient::stop_reception() {
     io_service_.stop();
@@ -124,17 +112,6 @@ void UDPClient::handle_send(const boost::system::error_code& error,
 void UDPClient::reception_callback(const uint8_t* buffer, size_t size) {
     (void)buffer;
     (void)size;
-}
-void UDPClient::reception_Callback(const uint8_t* buffer, size_t size) {
-    (void)buffer;
-    (void)size;
-}
-void UDPClient::reception_Callback(uint8_t* buffer, size_t size) {
-    (void)buffer;
-    (void)size;
-}
-void UDPClient::send_Data(const uint8_t* buffer, size_t size) {
-    send_data(buffer, size);
 }
 void UDPClient::send_data(const uint8_t* buffer, size_t size) {
     if (verbose_)

@@ -110,25 +110,10 @@ public:
      */
     void set_verbose(bool state);
     /**
-     * @brief make the client verbose when errors occur
-     * @deprecated now replaced by set_verbose
-     * @see set_verbose
-     */
-    [[deprecated("use set_verbose() instead")]]
-    void set_Verbose(bool state);
-    /**
      * @brief receive a message
      * @details this call is blocking until the reception_callback is called
      */
     void receive();
-    /**
-     * @brief receive a message
-     * @deprecated now replaced by receive()
-     * @see receive()
-     */
-
-    [[deprecated("use receive() instead")]]
-    void start_Client();
     /**
      * @brief start asynchronous message reception
      * @details once called the reception_callback will be called any time a
@@ -136,43 +121,12 @@ public:
      */
     void start_reception();
     /**
-     * @brief start asynchronous message reception
-     * @deprecated now replaced by start_reception()
-     * @see start_reception()
-     */
-    [[deprecated("use start_reception() instead")]] void start_Client_Thread();
-    /**
      * @brief stop asynchronous message reception
      * @details once called the reception_callback will no more be called any
      * time a message is received
      */
     void stop_reception();
-    /**
-     * @brief stop asynchronous message reception
-     * @deprecated now replaced by stop_reception()
-     * @see stop_reception()
-     */
-    [[deprecated("use stop_reception() instead")]]
-    void stop_Client();
 protected:
-    /**
-     * @brief callback called anytime a message is received
-     * @deprecated Override reception_callback() instead. Will be removed
-     * in the next major update
-     * @param [in] buffer the pointer to the buffer containing the message
-     * received
-     * @param [in] size size of the message received
-     */
-    [[deprecated("use reception_callback() instead")]]
-    virtual void reception_Callback(const uint8_t* buffer, size_t size);
-    /**
-     * @brief callback called anytime a message is received
-     * @deprecated Override reception_callback() instead. Will be removed
-     * in the next major update
-     * @see reception_Callback()
-     */
-    [[deprecated("use reception_callback() instead")]]
-    virtual void reception_Callback(uint8_t* buffer, size_t size);
     /**
      * @brief callback called anytime a message is received
      *
@@ -188,14 +142,6 @@ protected:
      * @param[in] size size of the buffer in bytes
      */
     void send_data(const uint8_t* buffer, size_t size);
-
-    /**
-     * @brief send data to server
-     * @deprecated now replaced by send_data()
-     * @see send_data()
-     */
-    [[deprecated("use send_data() instead")]]
-    void send_Data(const uint8_t* buffer, size_t size);
 private:
     void start_receive();
     void handle_receive(const boost::system::error_code& error,

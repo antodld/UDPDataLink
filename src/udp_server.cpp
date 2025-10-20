@@ -33,25 +33,10 @@ void UDPServer::connect(uint16_t port, size_t max_packet_size) {
 void UDPServer::set_verbose(bool state) {
     verbose_ = state;
 }
-void UDPServer::set_Verbose(bool state) {
-    set_verbose(state);
-}
-void UDPServer::set_Remote_Endpoint(const std::string& remote_ip,
-                                    uint16_t remote_port) {
-    boost::system::error_code ec;
-    auto ip_address = boost::asio::ip::address::from_string(remote_ip, ec);
-    if (ec) {
-        throw std::runtime_error("Invalid IP address: " + remote_ip);
-    }
-    remote_endpoint_ = udp::endpoint(ip_address, remote_port);
-}
 void UDPServer::receive() {
     io_service_.reset();
     start_receive();
     io_service_.run();
-}
-void UDPServer::start_Server() {
-    receive();
 }
 void UDPServer::start_reception() {
 
@@ -59,15 +44,9 @@ void UDPServer::start_reception() {
     start_receive();
     run_thread_ = std::thread([this] { io_service_.run(); });
 }
-void UDPServer::start_Server_Thread() {
-    start_reception();
-}
 void UDPServer::stop_reception() {
     io_service_.stop();
     run_thread_.join();
-}
-void UDPServer::stop_Server() {
-    stop_reception();
 }
 void UDPServer::start_receive() {
     if (verbose_)
@@ -106,12 +85,6 @@ void UDPServer::handle_send(const boost::system::error_code& error,
 void UDPServer::reception_callback(const uint8_t* buffer, size_t size) {
     send_data(buffer, size);
 }
-void UDPServer::reception_Callback(const uint8_t* buffer, size_t size) {
-    send_data(buffer, size);
-}
-void UDPServer::reception_Callback(uint8_t* buffer, size_t size) {
-    send_data(buffer, size);
-}
 
 void UDPServer::send_data(const uint8_t* buffer, size_t size) {
     if (verbose_)
@@ -120,7 +93,4 @@ void UDPServer::send_data(const uint8_t* buffer, size_t size) {
                           [this](auto error, auto bytes_transferred) {
                               handle_send(error, bytes_transferred);
                           });
-}
-void UDPServer::send_Data(const uint8_t* buffer, size_t size) {
-    send_data(buffer, size);
 }
