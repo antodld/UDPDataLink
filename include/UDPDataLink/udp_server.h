@@ -34,6 +34,7 @@
 #include <cstdlib>
 #include <thread>
 #include <vector>
+#include <list>
 /**
  * @brief Object for implementing a UDP server
  * @see UDPClient
@@ -122,7 +123,8 @@ private:
   boost::asio::io_service io_service_;
   std::thread run_thread_;
   boost::asio::ip::udp::socket socket_;
-  boost::asio::ip::udp::endpoint remote_endpoint_;
+  std::list<boost::asio::ip::udp::endpoint> remote_endpoints_;
+  boost::asio::ip::udp::endpoint tmp_remote_endpoint_;
   std::vector<uint8_t> buffer_in_;
   bool verbose_;
 };
