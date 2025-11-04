@@ -43,7 +43,6 @@ void UDPServer::receive()
 }
 void UDPServer::start_reception()
 {
-
   io_service_.reset();
   start_receive();
   run_thread_ = std::thread([this] { io_service_.run(); });
@@ -63,12 +62,19 @@ void UDPServer::handle_receive(const boost::system::error_code & error, std::siz
 {
   if(!error)
   {
-    if(verbose_)
+    if(std::find_if(remote_endpoints_.begin(), remote_endpoints_.end(),
+                    [this](const auto & clientEndpoint) { return clientEndpoint.endpoint() == new_client_endpoint_; })
+       != remote_endpoints_.end())
     {
-      std::cout << "Message received (" << bytes_transferred << " bytes) from " << new_client_endpoint_ << std::endl;
+      auto clientId = remote_endpoints_.size() ? remote_endpoints_.front().clientId() + 1 : 0;
+      remote_endpoints_.emplace_front(new_client_endpoint_, clientId, buffer_in_.size(), verbose_);
+      if(verbose_)
+      {
+        std::cout << "New client connected: " << clientId << " - message received (" << bytes_transferred
+                  << " bytes) from " << new_client_endpoint_ << std::endl;
+      }
+      reception_callback(static_cast<const uint8_t *>(buffer_in_.data()), bytes_transferred);
     }
-    remote_endpoints_.emplace_front(new_client_endpoint_, buffer_in_.size(), verbose_);
-    reception_callback(static_cast<const uint8_t *>(buffer_in_.data()), bytes_transferred);
   }
   else
   {

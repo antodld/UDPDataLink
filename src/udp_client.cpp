@@ -89,9 +89,22 @@ void UDPClient::handle_receive(const boost::system::error_code & error, std::siz
 {
   if(!error)
   {
-    if(verbose_)
-      std::cout << "Message received (" << bytes_transferred << " bytes) from " << remote_endpoint_ << std::endl;
-    reception_callback(static_cast<const uint8_t *>(buffer_in_.data()), bytes_transferred);
+    if(bytes_transferred == buffer_in_.size())
+    {
+      auto newSize = buffer_in_.size() * 2;
+      if(verbose_)
+      {
+        std::cout << "Warning: receive buffer was too small to handle message, doubling size from " << buffer_in_.size()
+                  << " bytes to " << newSize << std::endl;
+      }
+      buffer_in_.resize(newSize);
+    }
+    else
+    {
+      if(verbose_)
+        std::cout << "Message received (" << bytes_transferred << " bytes) from " << remote_endpoint_ << std::endl;
+      reception_callback(static_cast<const uint8_t *>(buffer_in_.data()), bytes_transferred);
+    }
   }
   else
   {

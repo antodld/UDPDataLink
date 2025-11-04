@@ -126,50 +126,80 @@ private:
   boost::asio::ip::udp::socket socket_;
   struct ClientEndpoint
   {
-    ClientEndpoint(const boost::asio::ip::udp::endpoint & ep, size_t default_packet_size = 0, bool verbose = false)
-    : endpoint(ep)
+    ClientEndpoint(const boost::asio::ip::udp::endpoint & ep,
+                   size_t clientId,
+                   size_t default_packet_size = 0,
+                   bool verbose = false)
+    : endpoint_(ep), clientId_(clientId)
     {
       buffer_out_.resize(default_packet_size);
+    }
+
+    size_t clientId() const noexcept
+    {
+      return clientId_;
+    }
+
+    boost::asio::ip::udp::endpoint endpoint() const noexcept
+    {
+      return endpoint_;
     }
 
     void send_data(boost::asio::ip::udp::socket & socket_, const uint8_t * buffer, size_t size)
     {
       if(sending_)
       {
-        std::cout << "A buffer is already being sent, skipping message" << std::endl;
+        if(verbose_)
+        {
+          std::cout << "Client " << clientId_ << ": a buffer is already being sent, skipping message" << std::endl;
+        }
+        return;
       }
+
+      // Resize sending buffer if it is smaller than the input data
       if(size > buffer_out_.size())
       {
         if(verbose_)
         {
-          std::cout << "Send buffer is too small, resizing to " << size << std::endl;
+          std::cout << "Client " << clientId_ << ": send buffer is too small, resizing to " << size << std::endl;
         }
         buffer_out_.resize(size);
       }
+
+      // Copy data to the send buffer. it needs to be kept alive until async_send_to completes
       buffer_out_.assign(buffer, buffer + size);
-      if(verbose_) std::cout << "Sending data to " << endpoint << ", size: " << size << std::endl;
+
+      if(verbose_)
+      {
+        std::cout << "Client " << clientId_ << ": sending data to " << endpoint_ << ", size: " << size << std::endl;
+      }
       sending_ = true;
-      socket_.async_send_to(boost::asio::buffer(buffer_out_, size), endpoint,
+      socket_.async_send_to(boost::asio::buffer(buffer_out_, size), endpoint_,
                             [this](auto error, auto bytes_transferred) { handle_sent(error, bytes_transferred); });
     }
 
     void handle_sent(const boost::system::error_code & error, std::size_t bytes_transferred)
     {
-      if(verbose_)
+      if(!error)
       {
-        if(!error)
-          std::cout << "Message sent (" << bytes_transferred << " bytes) " << std::endl;
-        else
-          std::cerr << "Error while sending the response" << std::endl;
+        if(verbose_)
+        {
+          std::cout << "Client " << clientId_ << ": message sent (" << bytes_transferred << " bytes) " << std::endl;
+        }
+      }
+      else
+      {
+        std::cerr << "Client " << clientId_ << ": error while sending the response" << std::endl;
       }
       sending_ = false;
     }
 
   protected:
     std::vector<uint8_t> buffer_out_;
-    boost::asio::ip::udp::endpoint endpoint;
+    boost::asio::ip::udp::endpoint endpoint_;
     bool sending_ = false;
     bool verbose_ = false;
+    size_t clientId_ = 0;
   };
 
   std::list<ClientEndpoint> remote_endpoints_;
