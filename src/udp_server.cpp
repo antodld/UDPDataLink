@@ -64,13 +64,14 @@ void UDPServer::handle_receive(const boost::system::error_code & error, std::siz
   {
     if(std::find_if(remote_endpoints_.begin(), remote_endpoints_.end(),
                     [this](const auto & clientEndpoint) { return clientEndpoint.endpoint() == new_client_endpoint_; })
-       != remote_endpoints_.end())
+       == remote_endpoints_.end())
     {
       auto clientId = remote_endpoints_.size() ? remote_endpoints_.front().clientId() + 1 : 0;
       remote_endpoints_.emplace_front(new_client_endpoint_, clientId, buffer_in_.size(), verbose_);
       if(verbose_)
       {
-        std::cout << "New client connected: " << clientId << " - message received (" << bytes_transferred
+        std::cout << "New client connected: " << clientId << "(ip: " << new_client_endpoint_.address().to_string()
+                  << ", " << new_client_endpoint_.port() << ") - message received (" << bytes_transferred
                   << " bytes) from " << new_client_endpoint_ << std::endl;
       }
       reception_callback(static_cast<const uint8_t *>(buffer_in_.data()), bytes_transferred);
