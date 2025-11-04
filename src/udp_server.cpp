@@ -55,8 +55,8 @@ void UDPServer::stop_reception()
 }
 void UDPServer::start_receive()
 {
-  if(verbose_) std::cout << "Start listening on " << tmp_remote_endpoint_ << std::endl;
-  socket_.async_receive_from(boost::asio::buffer(buffer_in_, buffer_in_.size()), tmp_remote_endpoint_,
+  if(verbose_) std::cout << "Start listening on " << new_client_endpoint_ << std::endl;
+  socket_.async_receive_from(boost::asio::buffer(buffer_in_, buffer_in_.size()), new_client_endpoint_,
                              [this](auto error, auto bytes_transferred) { handle_receive(error, bytes_transferred); });
 }
 void UDPServer::handle_receive(const boost::system::error_code & error, std::size_t bytes_transferred)
@@ -64,8 +64,10 @@ void UDPServer::handle_receive(const boost::system::error_code & error, std::siz
   if(!error)
   {
     if(verbose_)
-      std::cout << "Message received (" << bytes_transferred << " bytes) from " << tmp_remote_endpoint_ << std::endl;
-      remote_endpoints_.push_front(tmp_remote_endpoint_);
+    {
+      std::cout << "Message received (" << bytes_transferred << " bytes) from " << new_client_endpoint_ << std::endl;
+    }
+    remote_endpoints_.emplace_front(new_client_endpoint_, buffer_in_.size(), verbose_);
     reception_callback(static_cast<const uint8_t *>(buffer_in_.data()), bytes_transferred);
   }
   else
@@ -74,16 +76,6 @@ void UDPServer::handle_receive(const boost::system::error_code & error, std::siz
   }
   start_receive();
 }
-void UDPServer::handle_send(const boost::system::error_code & error, std::size_t bytes_transferred)
-{
-  if(verbose_)
-  {
-    if(!error)
-      std::cout << "Message sent (" << bytes_transferred << " bytes) "<< std::endl;
-    else
-      std::cerr << "Error while sending the response" << std::endl;
-  }
-}
 void UDPServer::reception_callback(const uint8_t * buffer, size_t size)
 {
   send_data(buffer, size);
@@ -91,9 +83,8 @@ void UDPServer::reception_callback(const uint8_t * buffer, size_t size)
 
 void UDPServer::send_data(const uint8_t * buffer, size_t size)
 {
-  for (auto it = remote_endpoints_.begin(); it != remote_endpoints_.end(); ++it){
-    if(verbose_) std::cout << "Sending data to " << *it << std::endl;
-    socket_.async_send_to(boost::asio::buffer(buffer, size), *it,
-                          [this](auto error, auto bytes_transferred) { handle_send(error, bytes_transferred); });
+  for(auto & clientEndPoint : remote_endpoints_)
+  {
+    clientEndPoint.send_data(socket_, buffer, size);
   }
 }
